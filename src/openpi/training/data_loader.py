@@ -6,7 +6,6 @@ from typing import Protocol, SupportsIndex, TypeVar
 
 import jax
 import jax.numpy as jnp
-os.environ["LEROBOT_HOME"] = "~/Surgical-pi0/datasets/demo"
 import lerobot.common.datasets.lerobot_dataset as lerobot_dataset
 import numpy as np
 import torch
