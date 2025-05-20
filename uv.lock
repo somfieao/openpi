@@ -1709,7 +1709,7 @@ wheels = [
 [[package]]
 name = "lerobot"
 version = "0.1.0"
-source = { git = "https://github.com/huggingface/lerobot?rev=6674e368249472c91382eb54bb8501c94c7f0c56#6674e368249472c91382eb54bb8501c94c7f0c56" }
+source = { git = "https://github.com/huggingface/lerobot?rev=a445d9c9da6bea99a8972daa4fe1fdd053d711d2#a445d9c9da6bea99a8972daa4fe1fdd053d711d2" }
 dependencies = [
     { name = "cmake" },
     { name = "datasets" },
