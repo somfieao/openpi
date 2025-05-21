@@ -12,6 +12,7 @@ import etils.epath as epath
 import flax.nnx as nnx
 from typing_extensions import override
 import tyro
+import os
 
 import openpi.models.model as _model
 import openpi.models.pi0 as pi0
@@ -63,6 +64,7 @@ class AssetsConfig:
 class DataConfig:
     # LeRobot repo id. If None, fake data will be created.
     repo_id: str | None = None
+    root: str | None = None
     # Directory within the assets directory containing the data assets.
     asset_id: str | None = None
     # Contains precomputed normalization stats. If None, normalization will not be performed.
@@ -139,6 +141,8 @@ class ModelTransformFactory(GroupFactory):
 class DataConfigFactory(abc.ABC):
     # The LeRobot repo id.
     repo_id: str = tyro.MISSING
+    # in case using local datasets with customize directory
+    root : str | None = None
     # Determines how the assets will be loaded.
     assets: AssetsConfig = dataclasses.field(default_factory=AssetsConfig)
     # Base config that will be updated by the factory.
@@ -665,6 +669,7 @@ _CONFIGS = [
         model=pi0.Pi0Config(),
         data=LeRobotSurRoLDataConfig(
             repo_id="lerobot",
+            root=os.path.join(os.path.abspath(os.path.dirname(__file__)), "../../../../datasets/demo"),
             base_config=DataConfig(
                 local_files_only=True,
                 prompt_from_task=True,
