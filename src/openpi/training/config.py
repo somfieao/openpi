@@ -142,7 +142,7 @@ class DataConfigFactory(abc.ABC):
     # The LeRobot repo id.
     repo_id: str = tyro.MISSING
     # in case using local datasets with customize directory
-    root : str | None = None
+    # root : str | None = None
     # Determines how the assets will be loaded.
     assets: AssetsConfig = dataclasses.field(default_factory=AssetsConfig)
     # Base config that will be updated by the factory.
@@ -449,6 +449,9 @@ class TrainConfig:
         if self.resume and self.overwrite:
             raise ValueError("Cannot resume and overwrite at the same time.")
 
+currentDirectory = os.path.abspath(os.path.dirname(__file__))
+parentDirectory = os.path.abspath(os.path.join(currentDirectory, "../../../../"))
+surrolRoot = os.path.join(parentDirectory, "datasets/demo/lerobot")
 
 # Use `get_config` if you need to get a config by name in your code.
 _CONFIGS = [
@@ -668,9 +671,9 @@ _CONFIGS = [
         name="pi0_surrol",
         model=pi0.Pi0Config(),
         data=LeRobotSurRoLDataConfig(
-            repo_id="lerobot",
-            root=os.path.join(os.path.abspath(os.path.dirname(__file__)), "../../../../datasets/demo"),
+            repo_id="Surgical-pi0",
             base_config=DataConfig(
+                root=surrolRoot,
                 local_files_only=True,
                 prompt_from_task=True,
             ),

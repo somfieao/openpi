@@ -84,20 +84,25 @@ class FakeDataset(Dataset):
 def create_dataset(data_config: _config.DataConfig, model_config: _model.BaseModelConfig) -> Dataset:
     """Create a dataset for training."""
     repo_id = data_config.repo_id
+    root = data_config.root
+    force_cache_sync = not data_config.local_files_only
     if repo_id is None:
         raise ValueError("Repo ID is not set. Cannot create dataset.")
     if repo_id == "fake":
         return FakeDataset(model_config, num_samples=1024)
 
-    dataset_meta = lerobot_dataset.LeRobotDatasetMetadata(repo_id, root=data_config.root, local_files_only=data_config.local_files_only)
+    dataset_meta = lerobot_dataset.LeRobotDatasetMetadata(
+        repo_id, 
+        root = root, 
+        force_cache_sync = force_cache_sync)
     dataset = lerobot_dataset.LeRobotDataset(
-        data_config.repo_id,
-        root=data_config.root,
+        repo_id,
+        root = root,
         delta_timestamps={
             key: [t / dataset_meta.fps for t in range(model_config.action_horizon)]
             for key in data_config.action_sequence_keys
         },
-        local_files_only=data_config.local_files_only,
+        force_cache_sync = force_cache_sync
     )
 
     if data_config.prompt_from_task:
