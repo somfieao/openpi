@@ -1,5 +1,6 @@
 import dataclasses
 
+import einops
 import numpy as np
 
 from openpi import transforms
@@ -16,6 +17,13 @@ def make_surrol_example() -> dict:
         "prompt": "do something",
     }
 
+def _parse_image(image) -> np.ndarray:
+    image = np.asarray(image)
+    if np.issubdtype(image.dtype, np.floating):
+        image = (255 * image).astype(np.uint8)
+    if image.shape[0] == 3:
+        image = einops.rearrange(image, "c h w -> h w c")
+    return image
 
 @dataclasses.dataclass(frozen=True)
 class SurRoLInputs(transforms.DataTransformFn):
@@ -54,9 +62,9 @@ class SurRoLInputs(transforms.DataTransformFn):
         # and two wrist views (left and right). If your dataset does not have a particular type
         # of image, e.g. wrist images, you can comment it out here and replace it with zeros like we do for the
         # right wrist image below.
-        base_image = data["base_image"]
-        left_wrist_image = data["wrist1_image"]
-        right_wrist_image = data["wrist2_image"]
+        base_image = _parse_image(data["base_image"])
+        left_wrist_image = _parse_image(data["wrist1_image"])
+        right_wrist_image = _parse_image(data["wrist2_image"])
 
         # Create inputs dict. Do not change the keys in the dict below.
         inputs = {
@@ -119,8 +127,8 @@ def _padToDimensionWithPositions(x : np.ndarray, targetDimension : int,
         return x
     outputShape[-1] = targetDimension
     output = np.zeros(outputShape)
-    leftTargetSlice = slice(start = 0, stop = currentDimension // 2)
-    rightTargetSlice = slice(start = targetDimension // 2, stop = targetDimension // 2 + currentDimension // 2)
-    output[..., leftTargetSlice] = x[leftSlice]
-    output[..., rightTargetSlice] = x[rightSlice]
+    leftTargetSlice = slice(0, currentDimension // 2)
+    rightTargetSlice = slice(targetDimension // 2, targetDimension // 2 + currentDimension // 2)
+    output[..., leftTargetSlice] = x[..., leftSlice]
+    output[..., rightTargetSlice] = x[..., rightSlice]
     return output
