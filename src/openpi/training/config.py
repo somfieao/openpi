@@ -687,6 +687,7 @@ _CONFIGS = [
         data=LeRobotSurRoLDataConfig(
             repo_id="Surgical-pi0",
             base_config=DataConfig(
+                root=surrolRoot,
                 local_files_only=True,
                 prompt_from_task=True,
             ),
@@ -697,7 +698,7 @@ _CONFIGS = [
             paligemma_variant="gemma_2b_lora", action_expert_variant="gemma_300m_lora"
         ).get_freeze_filter(),
         ema_decay=None,
-    )
+    ),
     #
     # Debugging configs.
     #
