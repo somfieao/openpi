@@ -452,6 +452,7 @@ class TrainConfig:
 currentDirectory = os.path.abspath(os.path.dirname(__file__))
 parentDirectory = os.path.abspath(os.path.join(currentDirectory, "../../../../"))
 surrolRoot = os.path.join(parentDirectory, "datasets/demo/lerobot")
+surrolNeedlePickRoot = os.path.join(parentDirectory, "datasets/demo/lerobot_NeedlePick")
 
 # Use `get_config` if you need to get a config by name in your code.
 _CONFIGS = [
@@ -735,7 +736,7 @@ _CONFIGS = [
         data=LeRobotSurRoLDataConfig(
             repo_id="Surgical-pi0",
             base_config=DataConfig(
-                root=surrolRoot,
+                root=surrolNeedlePickRoot,
                 local_files_only=True,
                 prompt_from_task=True,
             ),
