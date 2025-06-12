@@ -717,7 +717,31 @@ _CONFIGS = [
             ),
         ),
         weight_loader=weight_loaders.CheckpointWeightLoader("s3://openpi-assets/checkpoints/pi0_base/params"),
-        num_train_steps=5000,
+        num_train_steps=10_000,
+        save_interval=100,
+        keep_period=500,
+        freeze_filter=pi0.Pi0Config(
+            paligemma_variant="gemma_2b_lora", action_expert_variant="gemma_300m_lora"
+        ).get_freeze_filter(),
+        ema_decay=None,
+    ),
+    TrainConfig(
+        name="pi0_surrol_low_mem_h15_NeedlePick",
+        model=pi0.Pi0Config(
+            action_horizon=15,
+            paligemma_variant="gemma_2b_lora", 
+            action_expert_variant="gemma_300m_lora"
+        ),
+        data=LeRobotSurRoLDataConfig(
+            repo_id="Surgical-pi0",
+            base_config=DataConfig(
+                root=surrolRoot,
+                local_files_only=True,
+                prompt_from_task=True,
+            ),
+        ),
+        weight_loader=weight_loaders.CheckpointWeightLoader("s3://openpi-assets/checkpoints/pi0_base/params"),
+        num_train_steps=10_000,
         save_interval=100,
         keep_period=500,
         freeze_filter=pi0.Pi0Config(
