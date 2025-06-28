@@ -453,6 +453,8 @@ currentDirectory = os.path.abspath(os.path.dirname(__file__))
 parentDirectory = os.path.abspath(os.path.join(currentDirectory, "../../../../"))
 surrolRoot = os.path.join(parentDirectory, "datasets/demo/lerobot")
 surrolNeedlePickRoot = os.path.join(parentDirectory, "datasets/demo/lerobot_NeedlePick")
+surrolNeedlePickV2Root = os.path.join(parentDirectory, "datasets/demo/lerobot_NeedlePick_v2")
+surrolV2Root = os.path.join(parentDirectory, "datasets/demo/lerobot_v2")
 
 # Use `get_config` if you need to get a config by name in your code.
 _CONFIGS = [
@@ -745,6 +747,54 @@ _CONFIGS = [
         num_train_steps=10_000,
         save_interval=100,
         keep_period=500,
+        freeze_filter=pi0.Pi0Config(
+            paligemma_variant="gemma_2b_lora", action_expert_variant="gemma_300m_lora"
+        ).get_freeze_filter(),
+        ema_decay=None,
+    ),
+    TrainConfig(
+        name="pi0_surrol_v2_low_mem_h15_NeedlePick",
+        model=pi0.Pi0Config(
+            action_horizon=15,
+            paligemma_variant="gemma_2b_lora", 
+            action_expert_variant="gemma_300m_lora"
+        ),
+        data=LeRobotSurRoLDataConfig(
+            repo_id="Surgical-pi0",
+            base_config=DataConfig(
+                root=surrolNeedlePickV2Root,
+                local_files_only=True,
+                prompt_from_task=True,
+            ),
+        ),
+        weight_loader=weight_loaders.CheckpointWeightLoader("s3://openpi-assets/checkpoints/pi0_base/params"),
+        num_train_steps=30_000,
+        save_interval=1000,
+        keep_period=5000,
+        freeze_filter=pi0.Pi0Config(
+            paligemma_variant="gemma_2b_lora", action_expert_variant="gemma_300m_lora"
+        ).get_freeze_filter(),
+        ema_decay=None,
+    ),
+    TrainConfig(
+        name="pi0_surrol_v2_low_mem_h15",
+        model=pi0.Pi0Config(
+            action_horizon=15,
+            paligemma_variant="gemma_2b_lora", 
+            action_expert_variant="gemma_300m_lora"
+        ),
+        data=LeRobotSurRoLDataConfig(
+            repo_id="Surgical-pi0",
+            base_config=DataConfig(
+                root=surrolV2Root,
+                local_files_only=True,
+                prompt_from_task=True,
+            ),
+        ),
+        weight_loader=weight_loaders.CheckpointWeightLoader("s3://openpi-assets/checkpoints/pi0_base/params"),
+        num_train_steps=30_000,
+        save_interval=1000,
+        keep_period=5000,
         freeze_filter=pi0.Pi0Config(
             paligemma_variant="gemma_2b_lora", action_expert_variant="gemma_300m_lora"
         ).get_freeze_filter(),
